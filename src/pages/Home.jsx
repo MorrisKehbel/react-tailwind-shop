@@ -3,20 +3,30 @@ import { ProductCard } from "../components/ProductCard";
 import { Loading } from "../components/Loading";
 import { Error } from "../components/Error";
 import { useOutletContext } from "react-router";
+import { useState } from "react";
 
 export const Home = () => {
   const { fetchData, error, loading } = useFetchData(
     "https://fakestoreapi.com/products"
   );
   const { categoryFilter } = useOutletContext();
+  const [searchTerm, setSearchTerm] = useState("");
 
   if (loading) return <Loading />;
   if (!fetchData || error) return <Error error={error} />;
 
-  const filteredProducts =
-    categoryFilter === "all"
-      ? fetchData
-      : fetchData.filter((item) => item.category === categoryFilter);
+  // const filteredProducts =
+  //   categoryFilter === "all"
+  //     ? fetchData
+  //     : fetchData.filter((item) => item.category === categoryFilter);
+
+  const filteredProducts = fetchData
+    .filter((item) =>
+      categoryFilter === "all" ? true : item.category === categoryFilter
+    )
+    .filter((item) =>
+      item.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
   return (
     <div className="bg-stone-100 min-h-dvh py-4 px-4">
@@ -28,6 +38,8 @@ export const Home = () => {
           <input
             type="text"
             placeholder="Search products..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
             className="outline-none w-full ml-2 placeholder-gray-400 text-sm"
           />
         </div>

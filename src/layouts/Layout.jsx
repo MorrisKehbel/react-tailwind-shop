@@ -12,11 +12,15 @@ export const Layout = () => {
 
   useEffect(() => {
     const stored = JSON.parse(localStorage.getItem("cartItems")) || [];
-    const totalPrice = stored.reduce((acc, item) => acc + item.price, 0);
+    const totalPrice = stored.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    );
+    const totalItems = stored.reduce((acc, item) => acc + item.quantity, 0);
 
     setCartItems({
       totalPrice: totalPrice,
-      totalItems: stored.length,
+      totalItems: totalItems,
       products: stored,
     });
   }, []);

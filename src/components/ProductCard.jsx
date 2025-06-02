@@ -1,31 +1,61 @@
 import { useState, useEffect } from "react";
 import { useOutletContext } from "react-router";
 
+// const addCartHandle = (product, setOnCart, setCartItems) => {
+//   const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
+//   const exists = cartItems.some((item) => item.id === product.id);
+//   if (!exists) {
+//     const newItem = { ...product, quantity: 1 };
+//     const newItems = [...cartItems, newItem];
+
+//     localStorage.setItem("cartItems", JSON.stringify(newItems));
+//     setOnCart(true);
+//     const totalPrice = newItems.reduce((acc, item) => acc + item.price, 0);
+//     setCartItems({
+//       totalPrice: totalPrice,
+//       totalItems: newItems.length,
+//       products: newItems,
+//     });
+//   } else {
+//     const updatedItems = cartItems.filter((item) => item.id !== product.id);
+//     localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+//     setOnCart(false);
+//     const totalPrice = updatedItems.reduce((acc, item) => acc + item.price, 0);
+//     setCartItems({
+//       totalPrice: totalPrice,
+//       totalItems: updatedItems.length,
+//       products: updatedItems,
+//     });
+//   }
+// };
+
 const addCartHandle = (product, setOnCart, setCartItems) => {
   const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
   const exists = cartItems.some((item) => item.id === product.id);
 
+  let newItems;
+
   if (!exists) {
-    const newItems = [...cartItems, product];
-    localStorage.setItem("cartItems", JSON.stringify(newItems));
+    const newItem = { ...product, quantity: 1 };
+    newItems = [...cartItems, newItem];
     setOnCart(true);
-    const totalPrice = newItems.reduce((acc, item) => acc + item.price, 0);
-    setCartItems({
-      totalPrice: totalPrice,
-      totalItems: newItems.length,
-      products: newItems,
-    });
   } else {
-    const updatedItems = cartItems.filter((item) => item.id !== product.id);
-    localStorage.setItem("cartItems", JSON.stringify(updatedItems));
+    newItems = cartItems.filter((item) => item.id !== product.id);
     setOnCart(false);
-    const totalPrice = updatedItems.reduce((acc, item) => acc + item.price, 0);
-    setCartItems({
-      totalPrice: totalPrice,
-      totalItems: updatedItems.length,
-      products: updatedItems,
-    });
   }
+
+  const totalPrice = newItems.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
+  const totalItems = newItems.reduce((acc, item) => acc + item.quantity, 0);
+
+  localStorage.setItem("cartItems", JSON.stringify(newItems));
+  setCartItems({
+    products: newItems,
+    totalPrice,
+    totalItems,
+  });
 };
 
 export const ProductCard = ({ product }) => {
