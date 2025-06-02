@@ -1,6 +1,5 @@
 import { Link } from "react-router";
-
-export const Navbar = ({ setCategoryFilter, categoryFilter }) => {
+export const Navbar = ({ setCategoryFilter, categoryFilter, cartItems }) => {
   return (
     <nav className="px-4 sticky top-0 z-50 bg-stone-200/90 backdrop-blur-md shadow-sm text-stone-800">
       <div className="max-w-7xl mx-auto px-4">
@@ -181,15 +180,44 @@ export const Navbar = ({ setCategoryFilter, categoryFilter }) => {
           </div>
 
           <div className="flex gap-2 items-center">
-            <Link
-              to="/cart"
-              onClick={() => setCategoryFilter("cart")}
-              className="btn btn-ghost btn-circle btn-primary"
-            >
-              <span className="material-symbols-outlined text-2xl">
-                shopping_cart
-              </span>
-            </Link>
+            <div className="dropdown dropdown-end">
+              <div
+                tabIndex={0}
+                role="button"
+                className="btn btn-ghost btn-primary btn-circle"
+              >
+                <div className="indicator">
+                  <span className="material-symbols-outlined text-2xl">
+                    shopping_cart
+                  </span>
+                  <span className="badge badge-sm indicator-item">
+                    {cartItems.totalItems}
+                  </span>
+                </div>
+              </div>
+              <div
+                tabIndex={0}
+                className="card card-compact dropdown-content bg-white z-1 mt-3 w-52 shadow"
+              >
+                <div className="card-body">
+                  <span className="text-lg font-bold">
+                    {cartItems.totalItems}
+                  </span>
+                  <span className="text-info">
+                    ${Math.ceil(cartItems.totalPrice * 100) / 100}
+                  </span>
+                  <div className="card-actions">
+                    <Link
+                      to="/cart"
+                      onClick={() => setCategoryFilter("cart")}
+                      className="btn btn-primary btn-block"
+                    >
+                      View Cart
+                    </Link>
+                  </div>
+                </div>
+              </div>
+            </div>
             <button className="btn btn-ghost btn-circle btn-primary hidden md:flex">
               <span className="material-symbols-outlined text-2xl">
                 favorite

@@ -19,7 +19,7 @@ export const Home = () => {
       : fetchData.filter((item) => item.category === categoryFilter);
 
   return (
-    <div className="bg-stone-100 min-h-dvh py-4 px-18">
+    <div className="bg-stone-100 min-h-dvh py-4 px-4">
       <div className="max-w-xl mx-auto">
         <div className="bg-white text-black rounded-full shadow-md px-4 py-2 flex items-center">
           <span className="material-symbols-outlined text-gray-400">

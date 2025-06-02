@@ -1,21 +1,22 @@
-import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { useOutletContext } from "react-router";
 
 export const Cart = () => {
-  const [products, setProducts] = useState([]);
-  const saved = JSON.parse(localStorage.getItem("cartItems")) || [];
-  const allPrices = saved.map((item) => item.price);
-  const totalPrice = allPrices.reduce((acc, val) => acc + val, 0);
-  const { setCategoryFilter } = useOutletContext();
-
-  useEffect(() => {
-    setProducts(saved);
-  }, []);
+  const { setCategoryFilter, cartItems, setCartItems } = useOutletContext();
 
   const handleRemove = (id) => {
-    const updatedItems = products.filter((item) => item.id !== id);
-    setProducts(updatedItems);
+    const updatedItems = cartItems.products.filter((item) => item.id !== id);
+    const updatedPrice = updatedItems.reduce(
+      (acc, item) => acc + item.price,
+      0
+    );
+
+    setCartItems({
+      products: updatedItems,
+      totalPrice: updatedPrice,
+      totalItems: updatedItems.length,
+    });
+
     localStorage.setItem("cartItems", JSON.stringify(updatedItems));
   };
 
@@ -23,10 +24,10 @@ export const Cart = () => {
     <div className="max-w-5xl min-h-dvh mx-auto bg-white rounded-lg shadow-sm p-6 my-10">
       <h2 className="text-xl font-semibold mb-4 text-gray-800">Your Cart</h2>
 
-      {products.length === 0 ? (
+      {cartItems.products.length === 0 ? (
         <p className="text-gray-500 text-sm">Your cart is empty.</p>
       ) : (
-        <div className="overflow-x-auto flex-col">
+        <div className="overflow-x-auto  flex-col">
           <table className="table w-full text-sm text-left text-gray-600">
             <thead className="text-xs uppercase text-gray-500 border-b border-gray-200">
               <tr>
@@ -38,7 +39,7 @@ export const Cart = () => {
               </tr>
             </thead>
             <tbody>
-              {products.map((item) => (
+              {cartItems.products.map((item) => (
                 <tr
                   key={item.id}
                   className="border-b border-gray-100 hover:bg-gray-50"
@@ -70,10 +71,10 @@ export const Cart = () => {
       )}
       <div className="flex justify-end self-end py-8 items-center">
         <p className="px-8 font-bold text-black text-right">
-          Total Price: ${Math.ceil(totalPrice * 100) / 100}
+          Total Price: ${Math.ceil(cartItems.totalPrice * 100) / 100}
         </p>
 
-        {products.length === 0 ? (
+        {cartItems.products.length === 0 ? (
           <Link
             to="/"
             onClick={() => setCategoryFilter("all")}

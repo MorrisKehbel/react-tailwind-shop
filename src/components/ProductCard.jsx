@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useOutletContext } from "react-router";
 
-const addCartHandle = (product, setOnCart) => {
+const addCartHandle = (product, setOnCart, setCartItems) => {
   const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
   const exists = cartItems.some((item) => item.id === product.id);
 
@@ -9,26 +9,35 @@ const addCartHandle = (product, setOnCart) => {
     const newItems = [...cartItems, product];
     localStorage.setItem("cartItems", JSON.stringify(newItems));
     setOnCart(true);
+    const totalPrice = newItems.reduce((acc, item) => acc + item.price, 0);
+    setCartItems({
+      totalPrice: totalPrice,
+      totalItems: newItems.length,
+      products: newItems,
+    });
   } else {
     const updatedItems = cartItems.filter((item) => item.id !== product.id);
     localStorage.setItem("cartItems", JSON.stringify(updatedItems));
     setOnCart(false);
+    const totalPrice = updatedItems.reduce((acc, item) => acc + item.price, 0);
+    setCartItems({
+      totalPrice: totalPrice,
+      totalItems: updatedItems.length,
+      products: updatedItems,
+    });
   }
 };
 
 export const ProductCard = ({ product }) => {
   const [onCart, setOnCart] = useState(false);
-  const [itemTyp, setItemTyp] = useState("all");
-  const { setCategoryFilter, categoryFilter } = useOutletContext();
+  const { setCategoryFilter, categoryFilter, setCartItems } =
+    useOutletContext();
 
   useEffect(() => {
     const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
     const exists = cartItems.some((item) => item.id === product.id);
-
-    if (exists) {
-      setOnCart(true);
-    }
-  }, [itemTyp]);
+    setOnCart(exists);
+  }, [product.id]);
 
   return (
     <div className="rounded-lg shadow-sm bg-white">
@@ -57,11 +66,10 @@ export const ProductCard = ({ product }) => {
                 : `More of ${product.category}`}
             </p>
           </div>
-
           <div className="flex flex-wrap justify-between mt-auto">
             <p className="font-bold text-primary">${product.price}</p>
             <button
-              onClick={() => addCartHandle(product, setOnCart)}
+              onClick={() => addCartHandle(product, setOnCart, setCartItems)}
               className={`btn btn-sm ${
                 !onCart ? "btn-primary" : "bg-base-200"
               }`}
