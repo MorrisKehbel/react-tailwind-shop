@@ -1,13 +1,15 @@
 import { Outlet } from "react-router";
-import { Navbar } from "../components/Navbar";
-import { Footer } from "../components/Footer";
+import { useState } from "react";
+import { Navbar, Footer } from "../components/Index";
 
 export const Layout = () => {
+  const [categoryFilter, setCategoryFilter] = useState("all");
+
   return (
     <>
-      <Navbar />
+      <Navbar setCategoryFilter={setCategoryFilter} />
       <main>
-        <Outlet />
+        <Outlet context={{ categoryFilter }} />
       </main>
       <Footer />
     </>
