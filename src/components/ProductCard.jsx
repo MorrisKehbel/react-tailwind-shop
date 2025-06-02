@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useOutletContext } from "react-router";
 
 const addCartHandle = (product, setOnCart) => {
   const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
@@ -18,6 +19,7 @@ const addCartHandle = (product, setOnCart) => {
 export const ProductCard = ({ product }) => {
   const [onCart, setOnCart] = useState(false);
   const [itemTyp, setItemTyp] = useState("all");
+  const { setCategoryFilter, categoryFilter } = useOutletContext();
 
   useEffect(() => {
     const cartItems = JSON.parse(localStorage.getItem("cartItems")) || [];
@@ -37,8 +39,8 @@ export const ProductCard = ({ product }) => {
           className="h-40 object-contain mx-auto"
         />
       </figure>
-      <div className="bg-white rounded-xl flex flex-col p-4 h-46">
-        <div className="flex flex-col justify-between">
+      <div className="bg-white rounded-xl flex flex-col p-4 h-52">
+        <div className="flex flex-col justify-between h-full">
           <div>
             <h2 className="text-black font-semibold line-clamp-1">
               {product.title}
@@ -46,12 +48,17 @@ export const ProductCard = ({ product }) => {
             <p className="text-xs text-gray-500 mt-2 line-clamp-2">
               {product.description}
             </p>
-            <a href="#" className="text-xs font-semibold text-gray-500 mt-2">
-              {product.category}
-            </a>
+            <p
+              className="text-xs font-semibold text-gray-500 mt-2 cursor-pointer"
+              onClick={() => setCategoryFilter(product.category)}
+            >
+              {categoryFilter === product.category
+                ? ""
+                : `More of ${product.category}`}
+            </p>
           </div>
 
-          <div className="flex justify-between items-center mt-8">
+          <div className="flex flex-wrap justify-between mt-auto">
             <p className="font-bold text-primary">${product.price}</p>
             <button
               onClick={() => addCartHandle(product, setOnCart)}

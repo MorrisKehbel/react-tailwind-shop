@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router";
+import { useOutletContext } from "react-router";
 
 export const Cart = () => {
   const [products, setProducts] = useState([]);
   const saved = JSON.parse(localStorage.getItem("cartItems")) || [];
   const allPrices = saved.map((item) => item.price);
   const totalPrice = allPrices.reduce((acc, val) => acc + val, 0);
+  const { setCategoryFilter } = useOutletContext();
 
   useEffect(() => {
     setProducts(saved);
@@ -72,7 +74,11 @@ export const Cart = () => {
         </p>
 
         {products.length === 0 ? (
-          <Link to="/" className="btn rounded-btn bg-primary text-lg">
+          <Link
+            to="/"
+            onClick={() => setCategoryFilter("all")}
+            className="btn rounded-btn bg-primary text-lg"
+          >
             Return
           </Link>
         ) : (

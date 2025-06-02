@@ -7,9 +7,12 @@ export const Layout = () => {
 
   return (
     <>
-      <Navbar setCategoryFilter={setCategoryFilter} />
+      <Navbar
+        setCategoryFilter={setCategoryFilter}
+        categoryFilter={categoryFilter}
+      />
       <main>
-        <Outlet context={{ categoryFilter }} />
+        <Outlet context={{ categoryFilter, setCategoryFilter }} />
       </main>
       <Footer />
     </>
