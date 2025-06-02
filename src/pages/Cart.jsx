@@ -94,7 +94,9 @@ export const Cart = () => {
                         </button>
                       </div>
                     </td>
-                    <td className="py-3">${item.price.toFixed(2)}</td>
+                    <td className="py-3">
+                      ${(item.price * item.quantity).toFixed(2)}
+                    </td>
                     <td className="py-3 text-right">
                       <button
                         onClick={() => handleRemove(item.id)}
